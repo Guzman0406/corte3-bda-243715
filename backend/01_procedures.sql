@@ -54,3 +54,42 @@ agendamos a Misifú (id:2) con el doctor LOPEZ (id:1)
         CALL sp_agendar_cita(2, 1, '2026-05-01 10:00:00', 'Consulta de rutina', NULL);
 ERROR: "Ya existe una cita agendada para esa hora"
 */
+
+
+
+
+CREATE OR REPLACE FUNCTION fn_total_facturado(
+    p_mascota_id INT,
+    p_anio INT
+)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+AS $$ 
+
+DECLARE 
+    v_total NUMERIC;
+BEGIN
+
+IF p_anio NOT BETWEEN 2020 AND 2100
+THEN
+    RAISE EXCEPTION 'Año invalido';
+END IF;
+
+SELECT COALESCE(SUM(costo),0) -- Si la suma es nula da 0
+INTO v_total
+FROM citas 
+WHERE mascota_id = p_mascota_id 
+AND estado = 'COMPLETADA' 
+AND EXTRACT(YEAR FROM fecha_hora) = p_anio; -- Extraemos el año de la columna y la guardamos
+
+
+RETURN v_total;
+END; 
+$$;
+
+/*
+PRUEBAS
+        SELECT fn_total_facturado(1, 2025); VALIDO 
+        SELECT fn_total_facturado(1, 2099); VALIDO 
+        SELECT fn_total_facturado(999, 2025); INVALIDO POR ID
+*/
