@@ -21,7 +21,8 @@ DROP TABLE IF EXISTS alertas               CASCADE;
 DROP TABLE IF EXISTS historial_movimientos CASCADE;
 DROP TABLE IF EXISTS vacunas_aplicadas     CASCADE;
 DROP TABLE IF EXISTS inventario_vacunas    CASCADE;
-DROP TABLE IF EXISTS citas                 CASCADE;
+DROP TABLE IF EXISTS cit
+as                 CASCADE;
 DROP TABLE IF EXISTS vet_atiende_mascota   CASCADE;
 DROP TABLE IF EXISTS mascotas              CASCADE;
 DROP TABLE IF EXISTS veterinarios          CASCADE;

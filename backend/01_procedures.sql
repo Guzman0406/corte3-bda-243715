@@ -57,7 +57,6 @@ ERROR: "Ya existe una cita agendada para esa hora"
 
 
 
-
 CREATE OR REPLACE FUNCTION fn_total_facturado(
     p_mascota_id INT,
     p_anio INT
