@@ -53,4 +53,4 @@ Agendamos una cita para firulais (id:1) con el doctor LOPEZ (id:1)
 agendamos a Misifú (id:2) con el doctor LOPEZ (id:1)
         CALL sp_agendar_cita(2, 1, '2026-05-01 10:00:00', 'Consulta de rutina', NULL);
 ERROR: "Ya existe una cita agendada para esa hora"
-
+*/
