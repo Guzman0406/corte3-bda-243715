@@ -14,9 +14,14 @@ THEN
 END IF;
 
 -- VALIDAR QUE EL VETERINARIO EXISTA Y ESTE ACTIVO
-IF NOT EXISTS(SELECT 1 FROM veterinarios WHERE id = p_veterinario_id and activo = TRUE)
+IF NOT EXISTS(SELECT 1 FROM veterinarios WHERE id = p_veterinario_id)
 THEN   
     RAISE EXCEPTION 'El veterinario no existe';
+END IF;
+
+IF NOT EXISTS (SELECT 1 FROM veterinarios WHERE id = p_veterinario_id AND activo = TRUE)
+THEN
+    RAISE EXCEPTION 'El veterinario no se encuentra activo';
 END IF;
 
 -- REVISAR QUE NO HAYA COALISION HORARIA
@@ -37,7 +42,6 @@ RETURNING id INTO p_cita_id; -- Insertamos el id en la tabla citas para crearla 
 END;
 $$
 
-
 /* 
 CASOS DE PRUEBA 
 
@@ -49,3 +53,4 @@ Agendamos una cita para firulais (id:1) con el doctor LOPEZ (id:1)
 agendamos a Misifú (id:2) con el doctor LOPEZ (id:1)
         CALL sp_agendar_cita(2, 1, '2026-05-01 10:00:00', 'Consulta de rutina', NULL);
 ERROR: "Ya existe una cita agendada para esa hora"
+
