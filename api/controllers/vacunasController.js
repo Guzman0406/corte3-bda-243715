@@ -81,7 +81,16 @@ const aplicarVacuna = async (req, res) => {
             await client.query('SELECT set_config($1, $2, true)', ['app.current_vet_id', vetId.toString()]);
         }
         
-        await client.query(`SET LOCAL ROLE ${rol}`);    
+        await client.query(`SET LOCAL ROLE ${rol}`);   
+        
+        // Verificamos que la mascota pertenezca al veterinario
+        const verificacion = await client.query ('SELECT 1 FROM mascotas WHERE id = $1', [mascota_id]);
+
+        // Si la verificación regresa 0 es porque no es el veterinario asignado
+        if (verificacion.rows.length === 0){
+            await client.query('ROLLBACK');
+            return res.status(403).json({error: 'No tienes permiso para aplicar vacuna a esta mascota'});
+        }
         
         // Insertamos la nueva vacuna aplicada }
         // Returning * devuelve la fila recien creada 
