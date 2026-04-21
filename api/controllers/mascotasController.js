@@ -38,7 +38,7 @@ const buscarMascotas = async (req, res) => {
     const query = 'SELECT id, nombre, especie FROM mascotas WHERE nombre ILIKE $1';
     // Corregido: comillas invertidas y el porcentaje final
     const result = await client.query(query, [`%${nombre}%`]);
-bhgggn 
+
     await client.query ('COMMIT');
 
     // Regresar la consulta

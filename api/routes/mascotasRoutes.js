@@ -5,4 +5,4 @@ const {buscarMascotas} = require('../controllers/mascotasController');
 // Get /mascotas/buscar
 router.get ('/buscar', buscarMascotas);
 
-module.exports = router
+module.exports = router;

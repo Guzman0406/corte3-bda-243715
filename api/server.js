@@ -15,6 +15,9 @@ app.use(express.json())
 const mascotasRoutes = require ('./routes/mascotasRoutes')
 app.use ('/mascotas', mascotasRoutes)
 
+const vacunasRoutes = require ('./routes/vacunasRoutes');
+app.use('/vacunas', vacunasRoutes);
+
 app.get('/health', async (req, res) => {
     try{
         // Prueba de conexión a la base de datos
