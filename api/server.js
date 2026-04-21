@@ -5,10 +5,15 @@ const pool = require("./config/db")
 const redisClient = require("./config/redis")
 
 // Variables para inicializar el servidor
-const app = express()
+const app = express()   
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
+
+// Cuando se consulte /mascotas mandamos a llamar mascotasRoutes la cual 
+// usa mascotasController
+const mascotasRoutes = require ('./routes/mascotasRoutes')
+app.use ('/mascotas', mascotasRoutes)
 
 app.get('/health', async (req, res) => {
     try{
