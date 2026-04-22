@@ -3,12 +3,15 @@ require("dotenv").config()
 const express = require("express")
 const pool = require("./config/db")
 const redisClient = require("./config/redis")
+const path = require('path'); 
 
 // Variables para inicializar el servidor
 const app = express()   
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
+
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 const cors = require('cors');
 app.use(cors());

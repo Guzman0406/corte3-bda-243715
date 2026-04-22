@@ -7,3 +7,21 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
+
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: bda_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: GUZMaNL0
+      POSTGRES_DB: clinica_vet
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./schema_corte3.sql:/docker-entrypoint-initdb.d/00_schema.sql
+      - ./backend/01_procedures.sql:/docker-entrypoint-initdb.d/01_procedures.sql
+      - ./backend/02_triggers.sql:/docker-entrypoint-initdb.d/02_triggers.sql
+      - ./backend/03_views.sql:/docker-entrypoint-initdb.d/03_views.sql
+      - ./backend/04_roles_y_permisos.sql:/docker-entrypoint-initdb.d/04_roles_y_permisos.sql
+      - ./backend/05_rls.sql:/docker-entrypoint-initdb.d/05_rls.sql
+    restart: unless-stopped
