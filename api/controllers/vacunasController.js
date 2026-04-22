@@ -3,6 +3,8 @@ const redisClient = require('../config/redis');
 
 // GET /vacunas/pendientes
 const getVacunasPendientes = async (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Access-Control-Expose-Headers', 'X-Cache');
     const rol = req.headers['x-rol'];
     const vetId = req.headers['x-vet-id'];
     const key = 'api:vacunas:pendientes';
@@ -15,6 +17,7 @@ const getVacunasPendientes = async (req, res) => {
         const cached = await redisClient.get(key);
         if (cached) {
             console.log(`[CACHE HIT] ${key}`);
+            res.setHeader('X-Cache', 'HIT');
             return res.json(JSON.parse(cached)); // Al devolver un texto gigante, lo parseamos a un arreglo
         }
 
@@ -53,6 +56,8 @@ const getVacunasPendientes = async (req, res) => {
         //stringify(rows) comprime los datos para guardalo en redis 
         await redisClient.set(key, JSON.stringify(rows), 'EX', 300); 
 
+        res.setHeader('X-Cache', 'MISS');
+        
         res.json(rows);
 
     } catch (error) {
