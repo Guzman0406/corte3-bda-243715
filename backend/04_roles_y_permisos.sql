@@ -23,6 +23,7 @@ GRANT SELECT ON duenos TO rol_veterinario;
 GRANT SELECT, INSERT ON vacunas_aplicadas TO rol_veterinario;
 GRANT SELECT ON inventario_vacunas TO rol_veterinario;
 GRANT SELECT ON vet_atiende_mascota TO rol_veterinario;
+GRANT SELECT ON v_mascotas_vacunacion_pendiente TO rol_veterinario;
 
 -- Permisos especificos al rol de recepción
 GRANT SELECT, INSERT, UPDATE ON mascotas TO rol_recepcion;

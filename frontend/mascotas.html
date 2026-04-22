@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mascotas - Búsqueda</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background-color: #f9fafb; margin: 0; padding: 20px; color: #1f2937; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .nav-buttons a { margin-right: 15px; color: #2563eb; text-decoration: none; font-weight: bold; }
+        button { padding: 8px 16px; background-color: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-blue { background-color: #2563eb; }
+        input { padding: 8px; width: 300px; border: 1px solid #d1d5db; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+        th { background-color: #f3f4f6; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <strong>Sesión:</strong> <span id="userInfo" style="color:#2563eb;"></span>
+        </div>
+        <div class="nav-buttons">
+            <a href="vacunacion.html">Ir a Vacunación (Redis)</a>
+            <button onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <h2>Búsqueda de Mascotas</h2>
+    <div>
+        <input type="text" id="inputNombre" placeholder="Buscar por nombre (ej. Max)...">
+        <button class="btn-blue" onclick="buscar()">Buscar Paciente</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Nombre</th><th>Especie</th></tr>
+        </thead>
+        <tbody id="tablaBody"></tbody>
+    </table>
+
+    <script>
+        document.getElementById('userInfo').innerText = `${localStorage.getItem('rol')} | Vet ID: ${localStorage.getItem('vetId')}`;
+
+        async function buscar() {
+            const nombre = document.getElementById('inputNombre').value;
+            const rol = localStorage.getItem('rol');
+            const vetId = localStorage.getItem('vetId');
+            
+            try {
+                const response = await fetch(`http://localhost:3000/mascotas/buscar?nombre=${encodeURIComponent(nombre)}`, {
+                    headers: { 'x-rol': rol, 'x-vet-id': vetId }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById('tablaBody');
+                tbody.innerHTML = ''; 
+                
+                if (data.error) return alert('Error: ' + data.error);
+                data.forEach(m => {
+                    tbody.innerHTML += `<tr><td>${m.id}</td><td>${m.nombre}</td><td>${m.especie}</td></tr>`;
+                });
+            } catch (error) { console.error("Error al buscar:", error); }
+        }
+
+        function cerrarSesion() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

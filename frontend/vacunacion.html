@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Vacunación - Clínica Veterinaria</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background-color: #f9fafb; margin: 0; padding: 20px; color: #1f2937; }
+        .header { margin-bottom: 20px; }
+        a { color: #2563eb; text-decoration: none; font-weight: bold; }
+        button { padding: 10px 20px; background-color: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-blue { background-color: #2563eb; }
+        .log-box { background: #1f2937; color: #34d399; padding: 15px; margin-top: 15px; font-family: monospace; height: 120px; overflow-y: auto; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+        th { background-color: #f3f4f6; }
+        .form-aplicar { display: flex; gap: 10px; margin-top: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); align-items: center;}
+        input { padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="header"><a href="mascotas.html">⬅ Volver a Búsqueda</a></div>
+    
+    <h2>Vacunación Pendiente (Demo de Caché)</h2>
+    <button onclick="consultarPendientes()">Consultar Lista</button>
+    
+    <div class="log-box" id="logsDiv"><em>Esperando consultas...</em></div>
+
+    <div class="form-aplicar">
+        <strong>Aplicar Vacuna:</strong>
+        <input type="number" id="mascotaId" placeholder="ID Mascota">
+        <input type="number" id="vacunaId" placeholder="ID Vacuna">
+        <input type="number" id="costo" placeholder="Costo ($)">
+        <button class="btn-blue" onclick="aplicarVacuna()">Aplicar e Invalidar Caché</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr><th>ID Mascota</th><th>Nombre</th><th>Vacuna Pendiente</th><th>Stock Actual</th></tr>
+        </thead>
+        <tbody id="tablaBody"></tbody>
+    </table>
+
+    <script>
+        function agregarLog(latencia, registros) {
+            const logsDiv = document.getElementById('logsDiv');
+            if(logsDiv.innerText === 'Esperando consultas...') logsDiv.innerHTML = '';
+            const fecha = new Date().toISOString().replace('T', ' ').substring(0, 23);
+            const tipo = latencia < 50 ? '[CACHE HIT] ⚡' : '[CACHE MISS] 🐌';
+            logsDiv.innerHTML += `<div>Consulta — ${fecha} — ⏱ ${latencia}ms ${tipo} (${registros} registros)</div>`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        async function consultarPendientes() {
+            const inicio = Date.now();
+            try {
+                const response = await fetch('http://localhost:3000/vacunas/pendientes', {
+                    headers: { 'x-rol': localStorage.getItem('rol'), 'x-vet-id': localStorage.getItem('vetId') }
+                });
+                const data = await response.json();
+                const latencia = Date.now() - inicio;
+                if (data.error) return alert('Error: ' + data.error);
+
+                agregarLog(latencia, data.length);
+                const tbody = document.getElementById('tablaBody');
+                tbody.innerHTML = '';
+                data.forEach(v => {
+                    tbody.innerHTML += `<tr><td>${v.mascota_id}</td><td>${v.mascota}</td><td>${v.vacuna_pendiente}</td><td>${v.stock_actual} / ${v.stock_minimo}</td></tr>`;
+                });
+            } catch (error) { console.error(error); }
+        }
+
+        async function aplicarVacuna() {
+            const payload = {
+                mascota_id: document.getElementById('mascotaId').value,
+                vacuna_id: document.getElementById('vacunaId').value,
+                costo: document.getElementById('costo').value
+            };
+            try {
+                const response = await fetch('http://localhost:3000/vacunas/aplicar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-rol': localStorage.getItem('rol'),
+                        'x-vet-id': localStorage.getItem('vetId')
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (data.error) {
+                    alert('Bloqueo de Seguridad: ' + data.error);
+                } else {
+                    alert('Vacuna aplicada con éxito. El caché se ha limpiado.');
+                    consultarPendientes(); 
+                }
+            } catch (error) { console.error(error); }
+        }
+    </script>
+</body>
+</html>

@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 3000
 
 app.use(express.json())
 
+const cors = require('cors');
+app.use(cors());
+
 // Cuando se consulte /mascotas mandamos a llamar mascotasRoutes la cual 
 // usa mascotasController
 const mascotasRoutes = require ('./routes/mascotasRoutes')
