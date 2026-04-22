@@ -30,13 +30,12 @@ const buscarMascotas = async (req, res) => {
     }
 
     // SET LOCAL ROLE 
-    // Solo cuando ya paso la validación (Corregido: comillas invertidas)
+    // Solo cuando ya paso la validación 
     await client.query(`SET LOCAL ROLE ${rol}`); 
 
     // Petición de la consulta
     // Se parametriza la consulta para evitar inyección SQL
     const query = 'SELECT id, nombre, especie FROM mascotas WHERE nombre ILIKE $1';
-    // Corregido: comillas invertidas y el porcentaje final
     const result = await client.query(query, [`%${nombre}%`]);
 
     await client.query ('COMMIT');
