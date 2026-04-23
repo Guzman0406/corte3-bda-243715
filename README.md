@@ -4,6 +4,32 @@
 **Guzmán López Ángel Eduardo - 243715** 
 
 
+### Instrucciones de Ejecución
+
+**1. Levantar la infraestructura**
+
+En la raíz del proyecto debemos ejecutar:
+
+\`\`\`bash
+docker compose up -d
+\`\`\`
+
+**2. Iniciar el Backend**
+
+Entrar a la carpeta de la API, instalar las dependencias y levanta el servidor:
+\`\`\`bash
+cd api
+npm install
+npm run dev
+\`\`\`
+
+**3. Acceder al Frontend**
+accede a la siguiente ruta desde tu navegador para ver la pantalla de inicio de sesión:
+[http://localhost:3000/index.html](http://localhost:3000/index.html)
+
+---
+
+
 ### 1. ¿Qué política RLS aplicaste a la tabla `mascotas`? Pega la cláusula exacta y explica con tus palabras qué hace.
 
 **Cláusula SQL:**
