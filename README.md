@@ -51,7 +51,6 @@ Se eligió un tiempo de **5 minutos (300 segundos)**.
 ### 5. Tu frontend manda input del usuario al backend. Elige un endpoint crítico y pega la línea exacta donde el backend maneja ese input antes de enviarlo a la base de datos. Explica qué protege esa línea y de qué. Indica archivo y número de línea.
 
 **Archivo:** `api/controllers/mascotasController.js`
-
 ```javascript
 const result = await client.query(
     'SELECT id, nombre, especie FROM mascotas WHERE nombre ILIKE $1',
@@ -59,6 +58,7 @@ const result = await client.query(
 );
 
 ```
+linea 38
 
 Este bloque realiza la parametrización del input y protege de inyección SQL al usar `$1` y pasar el dato por separado. La parametrización le pasa el input de forma independiente a la query para que `pg` no lo interprete como código SQL, haciendo así inofensiva cualquier entrada maliciosa.
 

@@ -20,7 +20,7 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO rol_recepcion;
 GRANT SELECT, INSERT ON citas TO rol_veterinario;
 GRANT SELECT ON mascotas TO rol_veterinario;
 GRANT SELECT ON duenos TO rol_veterinario;
-GRANT SELECT, INSERT ON vacunas_aplicadas TO rol_veterinario;
+GRANT INSERT ON vacunas_aplicadas TO rol_veterinario;
 GRANT SELECT ON inventario_vacunas TO rol_veterinario;
 GRANT SELECT ON vet_atiende_mascota TO rol_veterinario;
 GRANT SELECT ON v_mascotas_vacunacion_pendiente TO rol_veterinario;
