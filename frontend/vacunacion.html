@@ -41,11 +41,14 @@
     </table>
 
     <script>
-        function agregarLog(latencia, registros) {
+        function agregarLog(latencia, registros, isHit) {
             const logsDiv = document.getElementById('logsDiv');
             if(logsDiv.innerText === 'Esperando consultas...') logsDiv.innerHTML = '';
             const fecha = new Date().toISOString().replace('T', ' ').substring(0, 23);
-            const tipo = latencia < 50 ? '[CACHE HIT] ⚡' : '[CACHE MISS] 🐌';
+            
+            // Evaluamos usando la verdad del servidor (isHit) y no adivinando con el tiempo
+            const tipo = isHit ? '[CACHE HIT] ⚡' : '[CACHE MISS] 🐌';
+            
             logsDiv.innerHTML += `<div>Consulta — ${fecha} — ⏱ ${latencia}ms ${tipo} (${registros} registros)</div>`;
             logsDiv.scrollTop = logsDiv.scrollHeight;
         }
@@ -56,11 +59,16 @@
                 const response = await fetch('http://localhost:3000/vacunas/pendientes', {
                     headers: { 'x-rol': localStorage.getItem('rol'), 'x-vet-id': localStorage.getItem('vetId') }
                 });
+                
+                // Leemos la cabecera exacta del servidor
+                const cacheHeader = response.headers.get('X-Cache');
+                const isHit = cacheHeader === 'HIT';
+
                 const data = await response.json();
                 const latencia = Date.now() - inicio;
                 if (data.error) return alert('Error: ' + data.error);
 
-                agregarLog(latencia, data.length);
+                agregarLog(latencia, data.length, isHit);
                 const tbody = document.getElementById('tablaBody');
                 tbody.innerHTML = '';
                 data.forEach(v => {
